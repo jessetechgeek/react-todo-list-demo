@@ -1,37 +1,55 @@
-import {useState} from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import {Button} from "@/components/ui/button"
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import LoginPage from './pages/LoginPage'
+import SignupPage from './pages/SignupPage'
+import { authApi } from './lib/api-client'
+
+// Protected route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuthenticated = authApi.isLoggedIn()
+  
+  if (!isAuthenticated) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" replace />
+  }
+  
+  return <>{children}</>
+}
+
+// Placeholder Dashboard component
+const Dashboard = () => (
+  <div className="p-6">
+    <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+    <p>Welcome to your Todo Dashboard!</p>
+    <button 
+      className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+      onClick={() => {
+        authApi.logout()
+        window.location.href = '/login'
+      }}
+    >
+      Logout
+    </button>
+  </div>
+)
 
 function App() {
-    const [count, setCount] = useState(0)
-
-    return (
-        <>
-            <div>
-                <a href="https://vite.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo"/>
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo"/>
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-            <Button onClick={() => setCount((count) => count + 1)}>Click me</Button>
-        </>
-    )
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Router>
+  )
 }
 
 export default App
