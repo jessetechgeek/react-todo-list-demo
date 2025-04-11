@@ -1,53 +1,78 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
+import HomePage from './pages/HomePage'
+import TodoListPage from './pages/TodoListPage'
+import Header from './components/Header'
+import Footer from './components/Footer'
 import { authApi } from './lib/api-client'
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = authApi.isLoggedIn()
+  console.log("ProtectedRoute - isAuthenticated:", isAuthenticated);
+  console.log("ProtectedRoute - token:", localStorage.getItem("token"));
   
   if (!isAuthenticated) {
     // Redirect to login if not authenticated
+    console.log("ProtectedRoute - redirecting to login");
     return <Navigate to="/login" replace />
   }
   
   return <>{children}</>
 }
 
-// Placeholder Dashboard component
-const Dashboard = () => (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-    <p>Welcome to your Todo Dashboard!</p>
-    <button 
-      className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-      onClick={() => {
-        authApi.logout()
-        window.location.href = '/login'
-      }}
-    >
-      Logout
-    </button>
-  </div>
-)
-
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route 
-          path="/dashboard" 
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } 
-        />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Routes>
+          {/* Auth routes - without Header */}
+          <Route path="/login" element={
+            <>
+              <main className="flex-grow">
+                <LoginPage />
+              </main>
+              <Footer />
+            </>
+          } />
+          <Route path="/signup" element={
+            <>
+              <main className="flex-grow">
+                <SignupPage />
+              </main>
+              <Footer />
+            </>
+          } />
+          
+          {/* Protected routes - with Header */}
+          <Route path="/" element={
+            <>
+              <Header />
+              <main className="flex-grow">
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              </main>
+              <Footer />
+            </>
+          } />
+          <Route path="/lists/:listId" element={
+            <>
+              <Header />
+              <main className="flex-grow">
+                <ProtectedRoute>
+                  <TodoListPage />
+                </ProtectedRoute>
+              </main>
+              <Footer />
+            </>
+          } />
+          
+          {/* Redirect all other routes */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
     </Router>
   )
 }

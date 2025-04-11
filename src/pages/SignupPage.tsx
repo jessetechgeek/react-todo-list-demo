@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { authApi } from "@/lib/api-client";
-import { validateSignupForm } from "@/lib/validation";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { PasswordStrength } from "@/components/ui/password-strength";
-import { AuthLayout } from "@/components/auth-layout";
+import { authApi } from "../lib/api-client";
+import { validateSignupForm } from "../lib/validation";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { PasswordInput } from "../components/ui/password-input";
+import { Label } from "../components/ui/label";
+import { Button } from "../components/ui/button";
+import { PasswordStrength } from "../components/ui/password-strength";
+import { AuthLayout } from "../components/auth-layout";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "../components/ui/toast";
 
 export function SignupPage() {
   const [formData, setFormData] = useState({

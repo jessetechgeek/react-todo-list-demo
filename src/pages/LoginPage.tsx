@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { authApi } from "@/lib/api-client";
-import { validateLoginForm } from "@/lib/validation";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { AuthLayout } from "@/components/auth-layout";
+import { authApi } from "../lib/api-client";
+import { validateLoginForm } from "../lib/validation";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { PasswordInput } from "../components/ui/password-input";
+import { Label } from "../components/ui/label";
+import { Button } from "../components/ui/button";
+import { AuthLayout } from "../components/auth-layout";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "../components/ui/toast";
 
 export function LoginPage() {
   const [username, setUsername] = useState("");
@@ -49,6 +49,7 @@ export function LoginPage() {
 
     try {
       await authApi.login(username, password);
+      
       // Add success toast
       addToast({
         id: Date.now().toString(),
@@ -56,8 +57,9 @@ export function LoginPage() {
         description: "You've been successfully logged in!",
         variant: "default",
       });
-      // Redirect to dashboard after successful login
-      navigate("/dashboard");
+      
+      // Redirect to home page after successful login
+      navigate("/");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Login failed";
       setErrors({ form: errorMessage });
@@ -73,6 +75,12 @@ export function LoginPage() {
       setLoading(false);
     }
   };
+
+  // For debugging - add a console log to check if token exists
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log("Current token:", token);
+  }, []);
 
   return (
     <AuthLayout>
