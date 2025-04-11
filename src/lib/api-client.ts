@@ -100,10 +100,20 @@ export const todoApi = {
         dueDate?: string;
         priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
     }) {
-        return authenticatedRequest(`${API_BASE_URL}/api/lists/${listId}/items/${itemId}`, {
-            method: "PUT",
-            body: JSON.stringify(itemData),
-        });
+        try {
+            console.log(`Updating item ${itemId} in list ${listId} with data:`, itemData);
+            
+            const result = await authenticatedRequest(`${API_BASE_URL}/api/lists/${listId}/items/${itemId}`, {
+                method: "PUT",
+                body: JSON.stringify(itemData),
+            });
+            
+            console.log("Update successful, received:", result);
+            return result;
+        } catch (err) {
+            console.error(`Error updating item ${itemId} in list ${listId}:`, err);
+            throw err;
+        }
     },
 
     // Delete an item

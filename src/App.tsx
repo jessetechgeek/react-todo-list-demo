@@ -10,12 +10,8 @@ import { authApi } from './lib/api-client'
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = authApi.isLoggedIn()
-  console.log("ProtectedRoute - isAuthenticated:", isAuthenticated);
-  console.log("ProtectedRoute - token:", localStorage.getItem("token"));
-  
+
   if (!isAuthenticated) {
-    // Redirect to login if not authenticated
-    console.log("ProtectedRoute - redirecting to login");
     return <Navigate to="/login" replace />
   }
   
